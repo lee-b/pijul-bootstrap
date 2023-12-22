@@ -1,0 +1,7 @@
+.vscode/
+.image
+dist/
+build/
+*~
+*.bak
+
