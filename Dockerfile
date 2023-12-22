@@ -1,9 +1,12 @@
 FROM rust as build
 
+ARG PIJUL_VERSION
+ENV PIJUL_VERSION $PIJUL_VERSION
+
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y libsodium-dev libc-dev
 
-RUN cargo install pijul --version "~1.0.0-alpha" --root /usr/local --features git
+RUN cargo install pijul --version "~1.0.0-$PIJUL_VERSION" --root /usr/local --features git
 RUN strip /usr/local/bin/pijul
 
 #######################################################
