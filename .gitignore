@@ -5,3 +5,4 @@ build/
 *~
 *.bak
 
+publish.sh

@@ -1,12 +1,43 @@
 = Pijul Bootstrap
 
-This is a quick way to get started with https://pijul.org[Pijul].  Pijul is a **much better** version control system than `git`, but is a bit painful to initially install, because it depends on either itself or rust+cargo+nix.
+This is a quick way to get started with https://pijul.org[Pijul].
 
-Instead, this repo provides `pijul`` as:
+Pijul is a **much better** version control system than `git`, but is a bit painful to initially install, because it depends on either itself or rust+cargo+nix.  I think that Pijul deserves to do better, and making it easier to get started with will probably help, so this is an easier way.
 
-- a pre-compiled as a binary for amd64 linux, which only needs some commonly available distro libraries
-- a Docker Linux container image tarball, which you can download, import, and run (or use as a base image to extend) with no further dependencies (except docker/podman)
-- A simple `pij` script that runs the docker image provided above (once it has been manually installed - a docker upload will come soon, meaning no manual installation other than the script itself).
+This repo provides `pijul` as:
+
+- (primarily) a wrapper script that "just works", if you have docker installed and working.
+- (optionally) a pre-compiled as a binary for amd64 linux, which only needs some commonly available distro libraries
+
+
+== User-only install (for docker):
+
+1. Download the `bin/pij` script, and install it to `$HOME/.local/bin`:
++
+[source,shell]
+----
+install pij $HOME/.local/bin
+----
+
+2. Add this directory to your shell path. For bash, for example:
++
+[source,shell]
+----
+echo >> ~/.bashrc 'export PATH="$HOME/.local/bin:$PATH"'
+----
+
+3. Run `pijul` as normal, per the official documentation.
+
+
+== System-wide install (for docker):
+
+1. Download the `bin/pij` script, and install it **(as root)**, to `/usr/local/bin/pijul`:
++
+[source,shell]
+----
+install pij /usr/local/bin/pijul
+----
+
 
 == Binary executable installation
 
@@ -30,54 +61,19 @@ RUN apt-get update && apt-get install -y libsodium23 libssl3
 3. Run `pijul` as usual
 
 
-== Docker image
+== Docker image (from docker hub)
 
-The docker image can be downloaded from releases, and used as follows  (again, set VERSION and ARCH to match what you downloaded, of course):
-
-1. Import the docker save image:
+This may be useful if you want to build another container that pijul, such as a container-based pijul repo server.  However, you are advised to study the Dockerfile and build your own as needed, rather than relying on this for production updates etc.
 +
-[source,shell]
-----
-VERSION=1.0.0-alpha
-ARCH=x86_64
-gunzp pijul-serve-${ARCH}-${VERSION}.tar.gz
-docker import pijul-serve-${ARCH}-${VERSION}.tar
-----
+1. Run `docker pull leebraid/pijul-bootstrap:latest`.
+2. Use the `pijul` command within the docker container as usual (consult the docker documentation if unsure at this point).
+3. To use this in a Dockerfile, of course just do `FROM docker.io/leebraid/pijul-bootstrap:latest AS base`, or whatever.
 
-3. Tag the version as the latest one:
-+
-[source,shell]
-----
-docker tag pijul-serve:${ARCH}-${VERSION} pijul-serve:latest
-----
-
-4. Run `pijul` using docker
-+
-You need to map the directory that you want to work in to /workspace, and also be sure to run it as your current user and group id, so that any files are created as you.
-+
-[source,shell]
-----
-docker run -u `id -u`:`id -g` -v $(pwd):/workspace -ti pijul-serve
-----
-+
-See below on a script that simplifies this step.
-
-== `pij` wrapper for docker
-
-1. Download and install the `bin/pij` script **(as root)**:
-+
-[source,shell]
-----
-install pij /usr/local/bin
-----
-
-2. Run `pij` instead of the more complex `docker run` command given above.  They're essentially the same.
-
-3. From now on, you can use `pij` per the documentation for `pijul` on the official website.
 
 == Contributing
 
 - Please fork the code and submit a PR for any improvements.  In particular, the following improvements are welcome:
 
-  + Making the rust build fully static
+  + Making the rust binary executable build fully static
   + Library installation instructions for distros other than debian-likes.
+  + automated CI/CD updates from the pijul repo, so I don't have to maintain this ;)
