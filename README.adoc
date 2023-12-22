@@ -76,4 +76,8 @@ This may be useful if you want to build another container that pijul, such as a 
 
   + Making the rust binary executable build fully static
   + Library installation instructions for distros other than debian-likes.
-  + automated CI/CD updates from the pijul repo, so I don't have to maintain this ;)
+  + Automated CI/CD updates from the pijul repo, so I don't have to maintain this ;)
+  + Docker image (cross-)building for other architectures (AMD64, RV64, etc.)
+  + Confirmation/fixes for this working on other operating systems/distros (any BSD, for example)
+
+
